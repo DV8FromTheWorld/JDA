@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.requests.Request;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import net.dv8tion.jda.internal.requests.RateLimiter;
 import net.dv8tion.jda.internal.requests.Requester;
-import net.dv8tion.jda.internal.requests.Route;
+import net.dv8tion.jda.api.requests.Route;
 import okhttp3.Headers;
 import org.jetbrains.annotations.Contract;
 

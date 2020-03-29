@@ -24,8 +24,10 @@ import net.dv8tion.jda.api.hooks.IEventManager;
 import net.dv8tion.jda.api.hooks.VoiceDispatchInterceptor;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.Route;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.JDAImpl;
 import net.dv8tion.jda.internal.managers.PresenceImpl;
 import net.dv8tion.jda.internal.utils.Checks;
@@ -36,6 +38,7 @@ import net.dv8tion.jda.internal.utils.config.SessionConfig;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import net.dv8tion.jda.internal.utils.config.flags.ConfigFlag;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -59,6 +62,7 @@ public class JDABuilder
     public static final int GUILD_SUBSCRIPTIONS = GatewayIntent.getRaw(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
     protected final List<Object> listeners = new LinkedList<>();
 
+    protected boolean gatewayEnabled = true;
     protected ScheduledExecutorService rateLimitPool = null;
     protected boolean shutdownRateLimitPool = true;
     protected ScheduledExecutorService mainWsPool = null;
@@ -156,6 +160,32 @@ public class JDABuilder
     }
 
     /**
+     * Creates a JDABuilder instance with {@link #setGatewayEnabled(boolean) setGatewayEnabled(false)}.
+     * <br>This means the resulting JDA instance will not use any cache and will not receive any events.
+     *
+     * <p>You will be limited to {@link RestAction} with the use of {@link RestAction#makeAction(JDA, Route.CompiledRoute, DataObject)}
+     * and similar methods.
+     *
+     * @param  token
+     *         The authorization token to use
+     *
+     * @return The new JDABuilder
+     *
+     * @since  4.2.0
+     *
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute, DataObject)
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute, RequestBody)
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute)
+     */
+    @Nonnull
+    @CheckReturnValue
+    public static JDABuilder createRest(@Nonnull String token)
+    {
+        return new JDABuilder(token, 0)
+                .setGatewayEnabled(false);
+    }
+
+    /**
      * Creates a JDABuilder with recommended default settings.
      * <br>Note that these defaults can potentially change in the future.
      *
@@ -170,6 +200,8 @@ public class JDABuilder
      *         The bot token to use
      *
      * @return The new JDABuilder
+     *
+     * @since  4.2.0
      *
      * @see    #disableIntents(GatewayIntent, GatewayIntent...)
      * @see    #enableIntents(GatewayIntent, GatewayIntent...)
@@ -206,6 +238,8 @@ public class JDABuilder
      *         If provided with null intents
      *
      * @return The new JDABuilder
+     *
+     * @since  4.2.0
      */
     @Nonnull
     @CheckReturnValue
@@ -239,6 +273,8 @@ public class JDABuilder
      *         If provided with null intents
      *
      * @return The new JDABuilder
+     *
+     * @since  4.2.0
      */
     @Nonnull
     @CheckReturnValue
@@ -271,6 +307,8 @@ public class JDABuilder
      *
      * @return The new JDABuilder
      *
+     * @since  4.2.0
+     *
      * @see    #disableIntents(GatewayIntent, GatewayIntent...)
      * @see    #enableIntents(GatewayIntent, GatewayIntent...)
      */
@@ -301,6 +339,8 @@ public class JDABuilder
      *         The gateway intents to use
      *
      * @return The new JDABuilder
+     *
+     * @since  4.2.0
      */
     @Nonnull
     @CheckReturnValue
@@ -331,6 +371,8 @@ public class JDABuilder
      *         The other gateway intents to use
      *
      * @return The new JDABuilder
+     *
+     * @since  4.2.0
      */
     @Nonnull
     @CheckReturnValue
@@ -369,6 +411,8 @@ public class JDABuilder
      *
      * @return The JDABuilder instance
      *
+     * @since  4.2.0
+     *
      * @see   #setToken(String)
      */
     @Nonnull
@@ -396,6 +440,8 @@ public class JDABuilder
      *         If the provided intents are null
      *
      * @return The JDABuilder instance
+     *
+     * @since  4.2.0
      *
      * @see   #setToken(String)
      */
@@ -426,6 +472,8 @@ public class JDABuilder
      *
      * @return The JDABuilder instance
      *
+     * @since  4.2.0
+     *
      * @see   #setToken(String)
      */
     @Nonnull
@@ -452,6 +500,8 @@ public class JDABuilder
      *
      * @return The JDABuilder instance
      *
+     * @since  4.2.0
+     *
      * @see   #setToken(String)
      */
     @Nonnull
@@ -459,6 +509,31 @@ public class JDABuilder
     public static JDABuilder create(@Nullable String token, @Nonnull Collection<GatewayIntent> intents)
     {
         return new JDABuilder(token, GatewayIntent.getRaw(intents));
+    }
+
+    /**
+     * Whether JDA should start a gateway connection to discord.
+     * <br>This means building a cache and receiving events.
+     *
+     * <p>Without a gateway connection, you will be limited to only {@link RestAction} with the use of
+     * {@link RestAction#makeAction(JDA, Route.CompiledRoute, DataObject)} and related methods.
+     *
+     * @param  enable
+     *         Whether to start a gateway connection (Default: True)
+     *
+     * @return The JDABuilder instance. Useful for chaining.
+     *
+     * @since  4.2.0
+     *
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute, DataObject)
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute, RequestBody)
+     * @see    RestAction#makeAction(JDA, Route.CompiledRoute)
+     */
+    @Nonnull
+    public JDABuilder setGatewayEnabled(boolean enable)
+    {
+        this.gatewayEnabled = enable;
+        return this;
     }
 
     /**
@@ -543,7 +618,9 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
-     * @see    #enableCache(CacheFlag, CacheFlag...) 
+     * @since  4.2.0
+     *
+     * @see    #enableCache(CacheFlag, CacheFlag...)
      * @see    #disableCache(Collection)
      */
     @Nonnull
@@ -568,7 +645,9 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
-     * @see    #enableCache(Collection) 
+     * @since  4.2.0
+     *
+     * @see    #enableCache(Collection)
      * @see    #disableCache(CacheFlag, CacheFlag...)
      */
     @Nonnull
@@ -615,7 +694,9 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
-     * @see    #disableCache(CacheFlag, CacheFlag...) 
+     * @since  4.2.0
+     *
+     * @see    #disableCache(CacheFlag, CacheFlag...)
      * @see    #enableCache(Collection)
      */
     @Nonnull
@@ -640,7 +721,9 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
-     * @see    #disableCache(Collection) 
+     * @since  4.2.0
+     *
+     * @see    #disableCache(Collection)
      * @see    #enableCache(CacheFlag, CacheFlag...)
      */
     @Nonnull
@@ -1466,6 +1549,8 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
+     * @since  4.2.0
+     *
      * @see    #enableIntents(Collection)
      */
     @Nonnull
@@ -1494,6 +1579,8 @@ public class JDABuilder
      *         If provided with null
      *
      * @return The JDABuilder instance. Useful for chaining.
+     *
+     * @since  4.2.0
      *
      * @see    #enableIntents(GatewayIntent, GatewayIntent...)
      */
@@ -1585,6 +1672,8 @@ public class JDABuilder
      *
      * @return The JDABuilder instance. Useful for chaining.
      *
+     * @since  4.2.0
+     *
      * @see    #disableIntents(Collection)
      */
     @Nonnull
@@ -1609,6 +1698,8 @@ public class JDABuilder
      *         If provided with null
      *
      * @return The JDABuilder instance. Useful for chaining.
+     *
+     * @since  4.2.0
      *
      * @see    #enableIntents(GatewayIntent, GatewayIntent...)
      */
@@ -1730,12 +1821,19 @@ public class JDABuilder
         listeners.forEach(jda::addEventListener);
         jda.setStatus(JDA.Status.INITIALIZED);  //This is already set by JDA internally, but this is to make sure the listeners catch it.
 
-        // Set the presence information before connecting to have the correct information ready when sending IDENTIFY
-        ((PresenceImpl) jda.getPresence())
-                .setCacheActivity(activity)
-                .setCacheIdle(idle)
-                .setCacheStatus(status);
-        jda.login(shardInfo, compression, true, intents);
+        if (gatewayEnabled)
+        {
+            // Set the presence information before connecting to have the correct information ready when sending IDENTIFY
+            ((PresenceImpl) jda.getPresence())
+                    .setCacheActivity(activity)
+                    .setCacheIdle(idle)
+                    .setCacheStatus(status);
+            jda.login(shardInfo, compression, true, intents);
+        }
+        else
+        {
+            jda.setStatus(JDA.Status.REST_ONLY);
+        }
         return jda;
     }
 

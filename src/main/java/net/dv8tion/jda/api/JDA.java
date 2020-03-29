@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.managers.DirectAudioController;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.Route;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 import net.dv8tion.jda.api.requests.restaction.GuildAction;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -34,7 +35,6 @@ import net.dv8tion.jda.api.utils.cache.CacheView;
 import net.dv8tion.jda.api.utils.cache.SnowflakeCacheView;
 import net.dv8tion.jda.internal.requests.CompletedRestAction;
 import net.dv8tion.jda.internal.requests.RestActionImpl;
-import net.dv8tion.jda.internal.requests.Route;
 import net.dv8tion.jda.internal.utils.Checks;
 import net.dv8tion.jda.internal.utils.Helpers;
 import okhttp3.OkHttpClient;
@@ -69,6 +69,8 @@ public interface JDA
      */
     enum Status
     {
+        /**JDA is initialized without a gateway connection*/
+        REST_ONLY,
         /**JDA is currently setting up supporting systems like the AudioSystem.*/
         INITIALIZING(true),
         /**JDA has finished setting up supporting systems and is ready to log in.*/
@@ -1856,16 +1858,6 @@ public interface JDA
      * @see #shutdown()
      */
     void shutdownNow();
-
-    ///**
-    // * Installs an auxiliary cable into the given port of your system.
-    // *
-    // * @param  port
-    // *         The port in which the cable should be installed.
-    // *
-    // * @return {@link net.dv8tion.jda.api.requests.restaction.AuditableRestAction AuditableRestAction}{@literal <}{@link Void}{@literal >}
-    // */
-    //AuditableRestAction<Void> installAuxiliaryCable(int port);
 
     /**
      * The {@link net.dv8tion.jda.api.AccountType} of the currently logged in account.
