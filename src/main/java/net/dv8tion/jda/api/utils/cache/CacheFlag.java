@@ -16,12 +16,18 @@
 
 package net.dv8tion.jda.api.utils.cache;
 
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.internal.utils.Checks;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.EnumSet;
 
 /**
  * Flags used to enable cache services for JDA.
@@ -58,6 +64,14 @@ public enum CacheFlag
      * Enables cache for {@link GuildChannel#getMemberPermissionOverrides()}
      */
     MEMBER_OVERRIDES(null),
+    /** Enables cache for {@link JDA#getVoiceChannelCache()} */
+    CHANNELS_VOICE(null),
+    /** Enables cache for {@link JDA#getTextChannelCache()} */
+    CHANNELS_TEXT(null),
+    /** Enables cache for {@link JDA#getStoreChannelCache()} */
+    CHANNELS_STORE(null),
+    /** Enables cache for {@link JDA#getCategoryCache()} */
+    CHANNELS_CATEGORY(null)
     ;
     private final GatewayIntent requiredIntent;
 
@@ -75,5 +89,66 @@ public enum CacheFlag
     public GatewayIntent getRequiredIntent()
     {
         return requiredIntent;
+    }
+
+    /**
+     * Converts the provided {@link ChannelType ChannelTypes} to the respective ConfigFlags.
+     *
+     * @param  types
+     *         The channel types
+     *
+     * @throws IllegalArgumentException
+     *         If null is provided
+     *
+     * @return {@link EnumSet} of the cache flags
+     */
+    @Nonnull
+    public static EnumSet<CacheFlag> fromChannels(@Nonnull ChannelType... types)
+    {
+        Checks.noneNull(types, "ChannelType");
+        if (types.length == 0)
+            return EnumSet.noneOf(CacheFlag.class);
+
+        EnumSet<CacheFlag> enabled = EnumSet.noneOf(CacheFlag.class);
+        for (ChannelType type : types)
+        {
+            switch (type)
+            {
+                case TEXT: enabled.add(CHANNELS_TEXT); break;
+                case VOICE: enabled.add(CHANNELS_VOICE); break;
+                case STORE: enabled.add(CHANNELS_STORE); break;
+                case CATEGORY: enabled.add(CHANNELS_CATEGORY); break;
+            }
+        }
+        return enabled;
+    }
+
+    /**
+     * Converts the provided {@link ChannelType ChannelTypes} to the respective ConfigFlags.
+     *
+     * @param  types
+     *         The channel types
+     *
+     * @throws IllegalArgumentException
+     *         If null is provided
+     *
+     * @return {@link EnumSet} of the cache flags
+     */
+    @Nonnull
+    public static EnumSet<CacheFlag> fromChannels(@Nonnull Collection<ChannelType> types)
+    {
+        Checks.noneNull(types, "ChannelType");
+        return fromChannels(types.toArray(new ChannelType[0]));
+    }
+
+    /**
+     * Shortcut for {@code fromChannels(ChannelType.values())}.
+     *
+     * @return All channel related cache flags as {@link EnumSet}
+     */
+    @Nonnull
+    public static EnumSet<CacheFlag> channels()
+    {
+        return fromChannels(ChannelType.values());
     }
 }

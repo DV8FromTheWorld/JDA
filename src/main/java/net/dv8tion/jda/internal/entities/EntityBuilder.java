@@ -786,13 +786,17 @@ public class EntityBuilder
                 .setAvailable(json.getBoolean("available", true));
     }
 
+    @Nullable
     public Category createCategory(DataObject json, long guildId)
     {
         return createCategory(null, json, guildId);
     }
 
+    @Nullable
     public Category createCategory(GuildImpl guild, DataObject json, long guildId)
     {
+        if (!api.isCacheFlagSet(CacheFlag.CHANNELS_CATEGORY))
+            return null;
         boolean playbackCache = false;
         final long id = json.getLong("id");
         CategoryImpl channel = (CategoryImpl) getJDA().getCategoriesView().get(id);
@@ -823,13 +827,17 @@ public class EntityBuilder
         return channel;
     }
 
+    @Nullable
     public StoreChannel createStoreChannel(DataObject json, long guildId)
     {
         return createStoreChannel(null, json, guildId);
     }
 
+    @Nullable
     public StoreChannel createStoreChannel(GuildImpl guild, DataObject json, long guildId)
     {
+        if (!api.isCacheFlagSet(CacheFlag.CHANNELS_STORE))
+            return null;
         boolean playbackCache = false;
         final long id = json.getLong("id");
         StoreChannelImpl channel = (StoreChannelImpl) getJDA().getStoreChannelsView().get(id);
@@ -861,14 +869,18 @@ public class EntityBuilder
         return channel;
     }
 
+    @Nullable
     public TextChannel createTextChannel(DataObject json, long guildId)
     {
         return createTextChannel(null, json, guildId);
 
     }
 
+    @Nullable
     public TextChannel createTextChannel(GuildImpl guildObj, DataObject json, long guildId)
     {
+        if (!api.isCacheFlagSet(CacheFlag.CHANNELS_TEXT))
+            return null;
         boolean playbackCache = false;
         final long id = json.getLong("id");
         TextChannelImpl channel = (TextChannelImpl) getJDA().getTextChannelsView().get(id);
@@ -905,13 +917,17 @@ public class EntityBuilder
         return channel;
     }
 
+    @Nullable
     public VoiceChannel createVoiceChannel(DataObject json, long guildId)
     {
         return createVoiceChannel(null, json, guildId);
     }
 
+    @Nullable
     public VoiceChannel createVoiceChannel(GuildImpl guild, DataObject json, long guildId)
     {
+        if (!api.isCacheFlagSet(CacheFlag.CHANNELS_VOICE))
+            return null;
         boolean playbackCache = false;
         final long id = json.getLong("id");
         VoiceChannelImpl channel = ((VoiceChannelImpl) getJDA().getVoiceChannelsView().get(id));

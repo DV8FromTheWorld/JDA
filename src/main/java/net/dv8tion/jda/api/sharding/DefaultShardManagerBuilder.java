@@ -257,7 +257,7 @@ public class  DefaultShardManagerBuilder
      *     <li>{@link #setEnabledIntents(Collection)} is set to {@link GatewayIntent#DEFAULT}</li>
      *     <li>{@link #setMemberCachePolicy(MemberCachePolicy)} is set to {@link MemberCachePolicy#NONE}</li>
      *     <li>{@link #setChunkingFilter(ChunkingFilter)} is set to {@link ChunkingFilter#NONE}</li>
-     *     <li>This disables all existing {@link CacheFlag CacheFlags}</li>
+     *     <li>This disables all {@link CacheFlag CacheFlags} except for {@link CacheFlag#channels()}</li>
      * </ul>
      *
      * @param  token
@@ -282,7 +282,7 @@ public class  DefaultShardManagerBuilder
      * <ul>
      *     <li>{@link #setMemberCachePolicy(MemberCachePolicy)} is set to {@link MemberCachePolicy#NONE}</li>
      *     <li>{@link #setChunkingFilter(ChunkingFilter)} is set to {@link ChunkingFilter#NONE}</li>
-     *     <li>This disables all existing {@link CacheFlag CacheFlags}</li>
+     *     <li>This disables all {@link CacheFlag CacheFlags} except for {@link CacheFlag#channels()}</li>
      * </ul>
      *
      * <p>If you don't enable certain intents, the cache will be disabled.
@@ -319,7 +319,7 @@ public class  DefaultShardManagerBuilder
      * <ul>
      *     <li>{@link #setMemberCachePolicy(MemberCachePolicy)} is set to {@link MemberCachePolicy#NONE}</li>
      *     <li>{@link #setChunkingFilter(ChunkingFilter)} is set to {@link ChunkingFilter#NONE}</li>
-     *     <li>This disables all existing {@link CacheFlag CacheFlags}</li>
+     *     <li>This disables all {@link CacheFlag CacheFlags} except for {@link CacheFlag#channels()}</li>
      * </ul>
      *
      * <p>If you don't enable certain intents, the cache will be disabled.
@@ -350,6 +350,7 @@ public class  DefaultShardManagerBuilder
         return this.setMemberCachePolicy(MemberCachePolicy.NONE)
                    .setChunkingFilter(ChunkingFilter.NONE)
                    .disableCache(EnumSet.allOf(CacheFlag.class))
+                   .enableCache(CacheFlag.channels())
                    .setLargeThreshold(50);
     }
 

@@ -16,7 +16,7 @@
 
 package net.dv8tion.jda.internal.handle;
 
-import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent;
 import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.store.StoreChannelCreateEvent;
@@ -53,35 +53,46 @@ public class ChannelCreateHandler extends SocketHandler
         {
             case STORE:
             {
-                builder.createStoreChannel(content, guildId);
+                StoreChannel channel = builder.createStoreChannel(content, guildId);
+                if (channel == null)
+                    break;
                 jda.handleEvent(
                     new StoreChannelCreateEvent(
                         jda, responseNumber,
-                        builder.createStoreChannel(content, guildId)));
+                        channel));
                 break;
             }
             case TEXT:
             {
+                TextChannel channel = builder.createTextChannel(content, guildId);
+                if (channel == null)
+                    break;
                 jda.handleEvent(
                     new TextChannelCreateEvent(
                         jda, responseNumber,
-                        builder.createTextChannel(content, guildId)));
+                        channel));
                 break;
             }
             case VOICE:
             {
+                VoiceChannel channel = builder.createVoiceChannel(content, guildId);
+                if (channel == null)
+                    break;
                 jda.handleEvent(
                     new VoiceChannelCreateEvent(
                         jda, responseNumber,
-                        builder.createVoiceChannel(content, guildId)));
+                        channel));
                 break;
             }
             case CATEGORY:
             {
+                Category channel = builder.createCategory(content, guildId);
+                if (channel == null)
+                    break;
                 jda.handleEvent(
                     new CategoryCreateEvent(
                         jda, responseNumber,
-                        builder.createCategory(content, guildId)));
+                        channel));
                 break;
             }
             case PRIVATE:
