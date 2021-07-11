@@ -18,6 +18,8 @@ package net.dv8tion.jda.api.requests.restaction;
 
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -118,4 +120,94 @@ public interface InviteAction extends AuditableRestAction<Invite>
     @Nonnull
     @CheckReturnValue
     InviteAction setUnique(@Nullable final Boolean unique);
+
+    /**
+     * Sets the id of the targeted application.
+     * The invite has to point to a voice channel.
+     * The invite will have the {@link Invite.TargetType#EMBEDDED_APPLICATION} target.
+     *
+     * @param applicationId
+     *        The id of the embedded application to target or {@code 0} to remove
+     *
+     * @return The current InviteAction for chaining.
+     */
+    @Nonnull
+    @CheckReturnValue
+    InviteAction setTargetApplication(final long applicationId);
+
+    /**
+     * Sets the id of the targeted application.
+     * The invite has to point to a voice channel.
+     * The invite will have the {@link Invite.TargetType#EMBEDDED_APPLICATION} target.
+     *
+     * @param applicationId
+     *        The id of the embedded application to target
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         If the provided ID is null
+     * @throws java.lang.NumberFormatException
+     *         If the provided ID is not a snowflake
+     *
+     * @return The current InviteAction for chaining.
+     */
+    @Nonnull
+    @CheckReturnValue
+    default InviteAction setTargetApplication(@Nonnull final String applicationId)
+    {
+        return setTargetApplication(MiscUtil.parseSnowflake(applicationId));
+    }
+
+    /**
+     * Sets the user whose stream to target for this invite.
+     * The user must be streaming in the same channel.
+     * The invite will have the {@link Invite.TargetType#STREAM} target.
+     *
+     * @param userId
+     *        The id of the user whose stream to target or {@code 0} to remove.
+     *
+     * @return The current InviteAction for chaining.
+     */
+    @Nonnull
+    @CheckReturnValue
+    InviteAction setTargetUser(final long userId);
+
+    /**
+     * Sets the user whose stream to display for this invite.
+     * The user must be streaming in the same channel.
+     * The invite will have the {@link Invite.TargetType#STREAM} target.
+     *
+     * @param userId
+     *        The id of the user whose stream to target.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         If the provided ID is null
+     * @throws java.lang.NumberFormatException
+     *         If the provided ID is not a snowflake
+     *
+     * @return The current InviteAction for chaining.
+     */
+    @Nonnull
+    @CheckReturnValue
+    default InviteAction setTargetUser(@Nonnull final String userId)
+    {
+        return setTargetUser(MiscUtil.parseSnowflake(userId));
+    }
+
+    /**
+     * Sets the user whose stream to display for this invite.
+     * The user must be streaming in the same channel.
+     * The invite will have the {@link Invite.TargetType#STREAM} target.
+     *
+     * @param user
+     *        The user whose stream to target.
+     *
+     * @return The current InviteAction for chaining.
+     */
+    @Nonnull
+    @CheckReturnValue
+    default InviteAction setTargetUser(@Nonnull final User user)
+    {
+        return setTargetUser(user.getIdLong());
+    }
+
 }
