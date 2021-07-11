@@ -100,6 +100,12 @@ public class  DefaultShardManagerBuilder
         this.token = token;
         this.intents = 1 | intents;
     }
+    
+    protected DefaultShardManagerBuilder(@Nullable String token, EnumSet<GatewayIntent> intents)
+    {
+        this.token = token;
+        this.intents = 1 | GatewayIntent.getRaw(intents);
+    }
 
     /**
      * Creates a DefaultShardManagerBuilder with recommended default settings.
@@ -209,7 +215,7 @@ public class  DefaultShardManagerBuilder
         return create(token, intents).applyDefault();
     }
 
-    private DefaultShardManagerBuilder applyDefault()
+    protected DefaultShardManagerBuilder applyDefault()
     {
         return this.setMemberCachePolicy(MemberCachePolicy.DEFAULT)
                    .setChunkingFilter(ChunkingFilter.NONE)
@@ -319,7 +325,7 @@ public class  DefaultShardManagerBuilder
         return create(token, intents).applyLight();
     }
 
-    private DefaultShardManagerBuilder applyLight()
+    protected DefaultShardManagerBuilder applyLight()
     {
         return this.setMemberCachePolicy(MemberCachePolicy.NONE)
                    .setChunkingFilter(ChunkingFilter.NONE)
