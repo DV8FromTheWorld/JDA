@@ -156,14 +156,14 @@ public class EmbedBuilder
      */
     public boolean isEmpty()
     {
-        return title == null
+        return Helpers.isBlank(title)
             && timestamp == null
             && thumbnail == null
             && author == null
             && footer == null
             && image == null
             && color == Role.DEFAULT_COLOR_RAW
-            && description.length() == 0
+            && Helpers.isBlank(description)
             && fields.isEmpty();
     }
 
