@@ -333,7 +333,7 @@ public class AudioConnection
             opusDecoders.valueCollection().forEach(Decoder::close);
             opusDecoders.clear();
         }
-        else if (receiveHandler != null && !receiveHandler.canReceiveCombined() && combinedAudioExecutor != null)
+        else if (receiveHandler != null && !receiveHandler.canReceiveCombined() && !receiveHandler.canSupportCombinedAudio() && combinedAudioExecutor != null)
         {
             combinedAudioExecutor.shutdownNow();
             combinedAudioExecutor = null;
@@ -468,7 +468,7 @@ public class AudioConnection
             receiveThread.start();
         }
 
-        if (receiveHandler.canReceiveCombined())
+        if (receiveHandler.canSupportCombinedAudio())
         {
             setupCombinedExecutor();
         }

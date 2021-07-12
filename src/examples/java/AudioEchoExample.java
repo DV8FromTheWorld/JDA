@@ -208,6 +208,12 @@ public class AudioEchoExample extends ListenerAdapter
         /* Receive Handling */
 
         @Override // combine multiple user audio-streams into a single one
+        public boolean canSupportCombinedAudio()
+        {
+            return true;
+        }
+
+        @Override // allow to receive next combined packet
         public boolean canReceiveCombined()
         {
             // limit queue to 10 entries, if that is exceeded we can not receive more until the send system catches up
