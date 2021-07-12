@@ -105,6 +105,7 @@ public class GuildImpl implements Guild
     private NotificationLevel defaultNotificationLevel = NotificationLevel.UNKNOWN;
     private MFALevel mfaLevel = MFALevel.UNKNOWN;
     private ExplicitContentLevel explicitContentLevel = ExplicitContentLevel.UNKNOWN;
+    private NSFWLevel nsfwLevel = NSFWLevel.UNKNOWN;
     private Timeout afkTimeout;
     private BoostTier boostTier = BoostTier.NONE;
     private Locale preferredLocale = Locale.ENGLISH;
@@ -955,6 +956,14 @@ public class GuildImpl implements Guild
     {
         return mfaLevel;
     }
+
+    @Nonnull
+    @Override
+    public NSFWLevel getNSFWLevel()
+    {
+        return nsfwLevel;
+    }
+
 
     @Nonnull
     @Override
@@ -1904,6 +1913,12 @@ public class GuildImpl implements Guild
     public GuildImpl setExplicitContentLevel(ExplicitContentLevel level)
     {
         this.explicitContentLevel = level;
+        return this;
+    }
+
+    public GuildImpl setNSFWLevel(NSFWLevel nsfwLevel)
+    {
+        this.nsfwLevel = nsfwLevel;
         return this;
     }
 
