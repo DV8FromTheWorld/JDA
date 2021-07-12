@@ -197,6 +197,10 @@ public interface MessageAction extends RestAction<Message>, Appendable, AllowedM
     @Override
     MessageAction deadline(long timestamp);
 
+    @Nonnull
+    @Override
+    MessageAction reason(@Nullable String reason);
+
     /**
      * The target {@link MessageChannel} for this message
      *
